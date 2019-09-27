@@ -4,22 +4,22 @@
  * submit button is pushed
  */
 
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-const NewBlogForm = ({onSubmitFormHandler}) => {
+const NewBlogForm = ({ onSubmitFormHandler }) => {
 
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState(``);
+  const [author, setAuthor] = useState(``);
+  const [url, setUrl] = useState(``);
 
   const onTitleChange = (event) => {
     setTitle(event.target.value);
-  }
+  };
 
   const handle = (event) => {
     event.preventDefault();
     onSubmitFormHandler({ title, author, url });
-  }
+  };
 
   return (
     <form>
@@ -36,7 +36,7 @@ const NewBlogForm = ({onSubmitFormHandler}) => {
         onChange={(event) => setAuthor(event.target.value)}
       />
       <br></br>
-    
+
       url
       <input
         value={url}
@@ -45,7 +45,7 @@ const NewBlogForm = ({onSubmitFormHandler}) => {
       <br></br>
       <button type="submit" onClick={handle}>Submit</button>
     </form>
-  )
-}
+  );
+};
 
 export default NewBlogForm;

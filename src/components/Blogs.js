@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
 
 import Blog from './Blog';
 
-const Blogs = ({blogs}) => {
+const Blogs = ({ blogs }) => {
 
   const getBlogRows = () => {
-    return blogs.map(blog => 
+    return blogs.map(blog =>
       <Blog blog={blog} key={blog.id}/>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -17,7 +17,7 @@ const Blogs = ({blogs}) => {
         {getBlogRows()}
       </ul>
     </>
-  )
-}
+  );
+};
 
 export default Blogs;
