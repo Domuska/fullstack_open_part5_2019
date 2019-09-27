@@ -22,7 +22,7 @@ const App = () => {
     async function fetchBlogs() {
       const blogs = await blogService.getAll();
       // console.log(blogs);
-      setBlogs(blogs);
+      sortAndSetBlogs(blogs);
     }
     fetchBlogs();
   }, []);
@@ -41,11 +41,27 @@ const App = () => {
     setUser(null);
   };
 
+  // setting blogs should be done through this function, handles sorting
+  const sortAndSetBlogs = (blogs) => {
+    const sortFunction = (firstBlog, secondBlog) => {
+      if (firstBlog.likes === secondBlog.likes) return 0;
+      return firstBlog.likes > secondBlog.likes ? -1 : 1;
+    };
+    setBlogs(blogs.sort(sortFunction));
+  };
+
+  const onBlogLike = async (blog) => {
+    console.log(`onBlogLike`, blog);
+    const responseBlog = await blogService.putLikes(blog.id, blog.likes + 1);
+    sortAndSetBlogs(blogs.map(blogObject => blogObject.id !== blog.id ? blogObject : responseBlog));
+    console.log(responseBlog);
+  };
+
   const onSubmitBlogHandler = async ({ title, author, url }) => {
     console.log(`onSubmitFormHandler`, title, author, url);
     try {
       const response = await blogService.create({ title, author, url });
-      setBlogs(blogs.concat(response));
+      sortAndSetBlogs(blogs.concat(response));
       setNotification(`Blog added: "${response.title}" by ${response.author}`);
       setTimeout(() => {
         setNotification(``);
@@ -116,7 +132,7 @@ const App = () => {
       <Togglable toggleButtonLabel="Create new">
         <NewBlogForm onSubmitFormHandler={onSubmitBlogHandler}></NewBlogForm>
       </Togglable>
-      <Blogs blogs={blogs}/>
+      <Blogs blogs={blogs} onBlogLike={onBlogLike}/>
     </div>
   );
 

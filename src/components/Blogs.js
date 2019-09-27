@@ -2,11 +2,11 @@ import React from 'react';
 
 import Blog from './Blog';
 
-const Blogs = ({ blogs }) => {
+const Blogs = ({ blogs, onBlogLike }) => {
 
   const getBlogRows = () => {
     return blogs.map(blog =>
-      <Blog blog={blog} key={blog.id}/>
+      <Blog blog={blog} key={blog.id} onBlogLike={onBlogLike}/>
     );
   };
 
