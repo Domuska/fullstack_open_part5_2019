@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Blogs from './components/Blogs';
+import Blog from './components/Blog';
 import Login from './components/Login';
 import NewBlogForm from './components/NewBlogForm';
 import Notification from './components/Notification';
@@ -18,14 +18,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(``);
 
-  useEffect(() => {
-    async function fetchBlogs() {
-      const blogs = await blogService.getAll();
-      // console.log(blogs);
-      sortAndSetBlogs(blogs);
-    }
-    fetchBlogs();
-  }, []);
 
   useEffect(() => {
     const loggedUserJson = window.localStorage.getItem(`loggedInBlogsUser`);
@@ -34,6 +26,15 @@ const App = () => {
       setUser(parsedUser);
       blogService.setToken(parsedUser.token);
     }
+  }, []);
+
+  useEffect(() => {
+    async function fetchBlogs() {
+      const blogs = await blogService.getAll();
+      // console.log(blogs);
+      sortAndSetBlogs(blogs);
+    }
+    fetchBlogs();
   }, []);
 
   const onLogoutClick = () => {
@@ -51,10 +52,36 @@ const App = () => {
   };
 
   const onBlogLike = async (blog) => {
-    console.log(`onBlogLike`, blog);
-    const responseBlog = await blogService.putLikes(blog.id, blog.likes + 1);
-    sortAndSetBlogs(blogs.map(blogObject => blogObject.id !== blog.id ? blogObject : responseBlog));
-    console.log(responseBlog);
+    try {
+      console.log(`onBlogLike`, blog);
+      const responseBlog = await blogService.putLikes(blog.id, blog.likes + 1);
+      sortAndSetBlogs(blogs.map(blogObject => blogObject.id !== blog.id ? blogObject : responseBlog));
+      console.log(responseBlog);
+    } catch (error) {
+      console.error(error);
+      setNotification(`Error while liking blog, see console output`);
+      setTimeout(() => {
+        setNotification(``);
+      }, 5000);
+    }
+  };
+
+  const onBlogDelete = async (blog) => {
+    try {
+      console.log(`onBlogDelete`);
+      const shouldDelete = window.confirm(`Are you sure you want to delete blog ${blog.title}?`);
+      if (shouldDelete) {
+        await blogService.deleteBlog(blog.id);
+        sortAndSetBlogs(blogs.filter(blogObject => blogObject.id !== blog.id));
+      }
+    } catch (error) {
+      console.error(error);
+      setNotification(`Error while deleting blog, see console output`);
+      setTimeout(() => {
+        setNotification(``);
+      }, 5000);
+    }
+
   };
 
   const onSubmitBlogHandler = async ({ title, author, url }) => {
@@ -123,6 +150,28 @@ const App = () => {
     return null;
   };
 
+
+  const getBlogRows = () => {
+    return blogs.map(blog => {
+      const deleteButton = () => (
+        <button onClick={() => onBlogDelete(blog)}>delete</button>
+      );
+
+      const isUserAuthor = !!blog.user.find(element => element.id === user.id);
+
+      return (
+        <Blog
+          blog={blog}
+          key={blog.id}
+          onBlogLike={onBlogLike}
+          onBlogDelete={onBlogDelete}>
+          {isUserAuthor && deleteButton()}
+        </Blog>
+      );
+    }
+    );
+  };
+
   const mainContent = () => (
     <div>
       <div>
@@ -132,10 +181,13 @@ const App = () => {
       <Togglable toggleButtonLabel="Create new">
         <NewBlogForm onSubmitFormHandler={onSubmitBlogHandler}></NewBlogForm>
       </Togglable>
-      <Blogs blogs={blogs} onBlogLike={onBlogLike}/>
+      <h2>Blogs</h2>
+      <ul>
+        {getBlogRows()}
+      </ul>
     </div>
-  );
 
+  );
 
   return (
     <div className="App">

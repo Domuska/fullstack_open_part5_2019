@@ -2,11 +2,17 @@ import React from 'react';
 
 import Blog from './Blog';
 
-const Blogs = ({ blogs, onBlogLike }) => {
+// NOT USED ANY MORE. LEFT FOR REFERENCE
+
+const Blogs = ({ blogs, onBlogLike, onBlogDelete }) => {
 
   const getBlogRows = () => {
     return blogs.map(blog =>
-      <Blog blog={blog} key={blog.id} onBlogLike={onBlogLike}/>
+      <Blog
+        blog={blog}
+        key={blog.id}
+        onBlogLike={onBlogLike}
+        onBlogDelete={onBlogDelete}/>
     );
   };
 

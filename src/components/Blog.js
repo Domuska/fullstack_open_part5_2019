@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 
-const Blog = ({ blog, onBlogLike }) => {
+const Blog = ({ blog, onBlogLike, children }) => {
 
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpansion = () => {
     setExpanded(!expanded);
   };
+
 
   const expandedStyle = {
     paddingTop: 2,
@@ -24,9 +25,10 @@ const Blog = ({ blog, onBlogLike }) => {
     marginLeft: 10
   };
 
+
   const expandedContent = () => (
     <>
-      <a href={blog.url}></a>
+      <a href={blog.url}>{blog.url}</a>
       <div>
         {blog.likes} likes
         <button
@@ -34,6 +36,7 @@ const Blog = ({ blog, onBlogLike }) => {
           style={buttonStyle}
         >like</button>
       </div>
+      {children}
     </>
   );
 
