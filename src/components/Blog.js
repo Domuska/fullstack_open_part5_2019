@@ -27,7 +27,7 @@ const Blog = ({ blog, onBlogLike, children }) => {
 
 
   const expandedContent = () => (
-    <>
+    <div className="expanded-content">
       <a href={blog.url}>{blog.url}</a>
       <div>
         {blog.likes} likes
@@ -37,17 +37,18 @@ const Blog = ({ blog, onBlogLike, children }) => {
         >like</button>
       </div>
       {children}
-    </>
+    </div>
   );
 
   console.log(blog);
 
   return (
-    <div style={expandedStyle}>
+    <div style={expandedStyle} className="blog">
       <div>
         <p
           onClick={() => toggleExpansion()}
-          style={titleStyle}>
+          style={titleStyle}
+          className="blog-title-row">
             &quot;{blog.title}&quot; by {blog.author}
         </p>
         {expanded && expandedContent()}
