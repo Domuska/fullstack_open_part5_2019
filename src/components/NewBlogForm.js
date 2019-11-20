@@ -4,44 +4,32 @@
  * submit button is pushed
  */
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useField } from '../hooks';
 
 const NewBlogForm = ({ onSubmitFormHandler }) => {
 
-  const [title, setTitle] = useState(``);
-  const [author, setAuthor] = useState(``);
-  const [url, setUrl] = useState(``);
-
-  const onTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
+  const titleHook = useField(`text`, `Title`);
+  const authorHook = useField(`text`, `Author`);
+  const urlHook = useField(`text`, `Url`);
 
   const handle = (event) => {
     event.preventDefault();
-    onSubmitFormHandler({ title, author, url });
+    onSubmitFormHandler({ title: titleHook.value, author: authorHook.value, url: urlHook.value });
   };
 
   return (
     <form>
       title:
-      <input
-        value={title}
-        onChange={onTitleChange}
-      />
+      <input {...titleHook.input}/>
       <br></br>
 
       author
-      <input
-        value={author}
-        onChange={(event) => setAuthor(event.target.value)}
-      />
+      <input {...authorHook.input}/>
       <br></br>
 
       url
-      <input
-        value={url}
-        onChange={(event) => setUrl(event.target.value)}
-      />
+      <input {...urlHook.input}/>
       <br></br>
       <button type="submit" onClick={handle}>Submit</button>
     </form>

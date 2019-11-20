@@ -13,8 +13,6 @@ import loginService from './services/login';
 const App = () => {
 
   const [blogs, setBlogs] = useState([]);
-  const [username, setUserName] = useState(``);
-  const [password, setPassword] = useState(``);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(``);
 
@@ -103,22 +101,12 @@ const App = () => {
 
   };
 
-  const handleUsernameChange = (event) => {
-    setUserName(event.target.value);
-  };
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-  const onLoginClick = async (event) => {
-    event.preventDefault();
-
+  const onLoginClick = async (username, password) => {
     try {
       const user = await loginService.login({ username, password });
       // console.log(`user:`, user);
 
       setUser(user);
-      setPassword(``);
-      setUserName(``);
       window.localStorage.setItem(`loggedInBlogsUser`, JSON.stringify(user));
       blogService.setToken(user.token);
 
@@ -133,10 +121,6 @@ const App = () => {
 
   const loginForm = () => (
     <Login
-      username={username}
-      password={password}
-      handleUserNameChange={handleUsernameChange}
-      handlePasswordChange={handlePasswordChange}
       onLoginClick={onLoginClick}
     />
   );

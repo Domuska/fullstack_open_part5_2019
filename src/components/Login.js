@@ -1,34 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Login = ({
-  username,
-  password,
-  onLoginClick,
-  handleUserNameChange,
-  handlePasswordChange }) => {
+import { useField } from '../hooks';
+
+const Login = ({ onLoginClick }) => {
+
+  const usernameHook = useField(`text`, `Username`);
+  const passwordHook = useField(`password`, `Password`);
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    onLoginClick(usernameHook.value, passwordHook.value);
+  };
 
   return (
     <>
     <h2>Log in </h2>
-    <form onSubmit={onLoginClick}>
+    <form onSubmit={handleLogin}>
       <div>
         username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={handleUserNameChange}
-        />
+        <input {...usernameHook.input}/>
       </div>
       <div>
         password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={handlePasswordChange}
-        />
+        <input {...passwordHook.input}/>
       </div>
       <button type="submit">login</button>
     </form>
@@ -37,11 +32,7 @@ const Login = ({
 };
 
 Login.propTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
   onLoginClick: PropTypes.func.isRequired,
-  handleUserNameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
 };
 
 export default Login;
